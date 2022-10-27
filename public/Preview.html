@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link rel="stylesheet" href="main.css">
+    <!-- VUE JS -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
+    <script src="print.min.js"></script>
+    <style>
+        .w-fit {
+            width: fit-content !important;
+        }
+
+
+        @media print {
+
+            .p-hide {
+                visibility: hidden !important;
+            }
+        }
+
+        @page {
+            margin: 0 !important;
+        }
+
+        @media (max-width:500px) {
+            .img {
+                width: 100vw !important;
+            }
+
+
+        }
+
+        .pot {
+            width: 100vw !important;
+            height: 100vh !important;
+        }
+
+        .logo1 {
+            position: absolute;
+            bottom: 1rem;
+            right: 0;
+        }
+
+        .tool {
+            top: 5rem;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+</head>
+
+<body id="app" class="position-relative">
+    <section class="pot d-flex justify-content-center align-items-center">
+
+        <div
+            class="position-relative rounded w-fit mx-auto my-1 d-flex flex-column justify-content-center align-items-center gap-3">
+            <img :src="image" alt="img" class="img-fluid">
+            <img src="./assets/SNB11.png" alt="" class="logo1 img-fluid" width="560">
+            <!-- <h1 class="fs-6 mt-3 text-center"> {{company}} Testing to print this image</h1> -->
+        </div>
+    </section>
+
+    <div
+        class="tool position-absolute start-50 translate-middle-x p-hide w-50 mx-auto px-2 d-flex justify-content-around align-items-center gap-4 ">
+        <a href="/"><i class="point fs-2 text-secondary bi bi-arrow-clockwise"></i></a>
+        <i @click="goPrint" class="point fs-2 text-secondary bi bi-printer-fill"></i>
+        <i @click="share" class="point fs-2 text-secondary bi bi-share-fill"></i>
+    </div>
+
+    <spinner :spin="spinner">
+        <h3 class="fs-5 text-dark"> Sending to {{email}} </h3>
+    </spinner>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+        crossorigin="anonymous"></script>
+
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+
+                    api: 'https://script.google.com/macros/s/AKfycbx675PRlND1p7OWnjXTlMqHO6TW69ARIaU0ooFSLdpAqQfPf8ggrsL6oPnzFtlXR7GMKA/exec',
+                    company: 'SNB',
+                    image: '',
+                    email: '',
+                    name: '',
+                    number: '',
+                    spinner: false
+                }
+            },
+            methods: {
+
+                share() {
+                    // printJS('https://picsum.photos/500', 'image')
+                    this.spinner = true
+                    fetch(this.api, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "text/plain",
+                        },
+                        body: JSON.stringify({
+                            name: this.name,
+                            email: this.email,
+                            number: this.number,
+                            imageURI: this.image
+
+                        })
+                    })
+                        .then((res) => res.json())
+                        .then((res) => {
+                            if (res == "200") {
+                                alert('تم ارسال الصور بنجاح ، الرجاء التحقق من بريدك')
+                                this.spinner = false;
+                                location.href = '/'
+                            } else {
+                                alert('Invalid Email Address')
+                                this.spinner = false;
+                                location.href = '/'
+                            }
+                        }).catch(e => {
+                            alert('شبكة ضعيفة الرجاء المحاولة مجددا')
+                            console.log(e)
+
+                            this.spinner = false;
+                            location.href = '/'
+                        })
+
+
+                },
+                goPrint() {
+                    window.print()
+                    location.href = '/'
+                }
+            },
+            mounted() {
+
+                console.log(sessionStorage.getItem('img'))
+                this.image = sessionStorage.getItem('img')
+                this.name = sessionStorage.getItem('name')
+                this.email = sessionStorage.getItem('email')
+                this.number = sessionStorage.getItem('number')
+                console.log(this.api)
+
+            }
+        })
+
+        app.component('spinner', {
+            template:
+                /*html*/
+                `
+    
+                <section v-if="spin" class="z-200 w-100 h-100 bg-glass position-fixed top-0 start-0 d-flex justify-content-center align-items-center">
+                    <div class="w-50 h-25 p-3 d-flex justify-content-center align-items-center flex-column gap-3">
+                        <div class="spinner-grow text-light-green" role="status"></div>
+                        <slot></slot>
+                    </div>
+                </section>
+                `,
+            props: ['spin', 'dir']
+        })
+        app.mount('#app')
+    </script>
+</body>
+
+</html>

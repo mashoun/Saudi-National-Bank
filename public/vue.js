@@ -2,7 +2,7 @@ const app = Vue.createApp({
     data() {
         return {
             company: 'Saudi National Bank',
-            api: 'https://script.google.com/macros/s/AKfycbzTzr6XK0rVcIhjJn62MWXgkKgUV2wkBLLcs3mPgYJPu6waYCzKPIHkyXXeVNhZEEl4Hw/exec',
+            api: 'https://script.google.com/macros/s/AKfycbx675PRlND1p7OWnjXTlMqHO6TW69ARIaU0ooFSLdpAqQfPf8ggrsL6oPnzFtlXR7GMKA/exec',
             loged: false,
             logedIn: false,
             openCamera: false,
@@ -31,6 +31,7 @@ const app = Vue.createApp({
                 prevEl: '.swiper-button-prev',
             },
         });
+
     },
     methods: {
 
@@ -151,12 +152,12 @@ const app = Vue.createApp({
 
 
         },
-        print() {
+        async print() {
             this.editTools = !this.editTools
-            window.print()
+            await window.print()
 
-            // location.reload()
-            this.share()
+            location.reload()
+            // this.share()
         },
         focus() {
             document.querySelector('.inp').blur()
@@ -177,15 +178,21 @@ const app = Vue.createApp({
             shutter.autoplay = true;
             shutter.src = navigator.userAgent.match(/Firefox/) ? 'shutter.ogg' : './assets/shutter.mp3';
 
-            this.preview = !this.preview
+            // play sound effect
+            shutter.play();
+            // this.preview = !this.preview
 
             // take snapshot and get image data
             Webcam.snap((data_uri) => {
 
-                // play sound effect
-                shutter.play();
                 this.imageURI = data_uri
-                console.log(this.imageURI)
+                // console.log(this.imageURI)
+                sessionStorage.setItem('name', this.username)
+                sessionStorage.setItem('email', this.useremail)
+                sessionStorage.setItem('number', this.usernumber)
+                sessionStorage.setItem('img', this.imageURI)
+
+                location.href = '/Preview.html'
                 // display results in page
                 // document.getElementById('results').innerHTML =
                 //     `<img class="w-75 shadow" src="' + data_uri + '"/>`;
@@ -206,7 +213,7 @@ app.component('Navbar', {
     
     <header class="w-100 px-4 py-2 shadow d-flex justify-content-between align-items-center ">
         <div class="">
-            <img src="./assets/ios/1024.png" alt="logo" class="img-fluid" width="60">
+            <img src="./assets/ios/1024.png" alt="logo" class="img-fluid" width="60"  ondblclick="alert('version 1.2.8')" >
         </div>
         <slot></slot>
     </header>
@@ -221,8 +228,9 @@ app.component('camera', {
         `
     <section class="container my-4">
         <div class="row justify-content-center px-3 gap-3">
+
             <div class="h-fit bg-white col-md-10 col-lg-5 col-12 shadow p-3 pb-0 rounded" dir="rtl">
-                <div id="camera" class="w-100 h-fit"></div>
+                <div id="camera" class="w-100 h-800px"></div>
 
                 <div class="d-flex justify-content-between align-items-center flex-column bg-light">
                     <h4 class="w-100 empty p-3 mt-3 fs-4 text-center text-second-green shadow-sm" contenteditable>
@@ -238,8 +246,8 @@ app.component('camera', {
     mounted() {
 
         Webcam.set({
-            width: 500,
-            height: 380,
+            width: 560,
+            height: 700,
             image_format: 'jpeg',
             jpeg_quality: 90
         });
@@ -262,7 +270,7 @@ app.component('swiper', {
                         :placeholder="tarjem('Enter Full Name ;; ادخل الاسم الكامل',lang)">
                 
                     
-                    <button class="btn btn-success w-100 p-3 fs-5" @click="slideNext(username)" :disabled="dis"><i class="bi bi-arrow-right"></i>
+                    <button class="btn btn-success w-100 p-3 fs-5" @click="slideNext(username)" ><i class="bi bi-arrow-right"></i>
                     {{tarjem('Next;;التالي',lang)}}
                 </button>
                 </div>
@@ -432,6 +440,6 @@ app.component('spinner', {
         </div>
     </section>
     `,
-    props: ['spin','dir']
+    props: ['spin', 'dir']
 })
 app.mount('#app')
