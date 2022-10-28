@@ -68,7 +68,7 @@
 
     <div
         class="tool position-absolute start-50 translate-middle-x p-hide w-50 mx-auto px-2 d-flex justify-content-around align-items-center gap-4 ">
-        <a href="/"><i class="point fs-2 text-secondary bi bi-arrow-clockwise"></i></a>
+        <a @click="back"><i class="point fs-2 text-secondary bi bi-arrow-clockwise"></i></a>
         <i @click="goPrint" class="point fs-2 text-secondary bi bi-printer-fill"></i>
         <i @click="share" class="point fs-2 text-secondary bi bi-share-fill"></i>
     </div>
@@ -98,6 +98,10 @@
                 }
             },
             methods: {
+                back() {
+
+                    location.href = '/'
+                },
 
                 share() {
                     // printJS('https://picsum.photos/500', 'image')
@@ -138,7 +142,7 @@
                 },
                 goPrint() {
                     window.print()
-                    location.href = '/'
+                    // location.href = '/'
                 }
             },
             mounted() {

@@ -213,7 +213,7 @@ app.component('Navbar', {
     
     <header class="w-100 px-4 py-2 shadow d-flex justify-content-between align-items-center ">
         <div class="">
-            <img src="./assets/ios/1024.png" alt="logo" class="img-fluid" width="60"  ondblclick="alert('version 1.2.8')" >
+            <img src="./assets/ios/1024.png" alt="logo" class="img-fluid" width="60"  ondblclick="alert('version 1.3')" >
         </div>
         <slot></slot>
     </header>
